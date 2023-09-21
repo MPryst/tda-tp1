@@ -99,7 +99,7 @@ def backtrack(grupo):
         print("MEJORA RESPECTO DE: ")
         ganancia_grupo(mejor_grupo, True)        
         max_ganancia = ganancia_grupo_actual
-        mejor_grupo = grupo.copy()        
+        mejor_grupo = grupo.copy()
     
     # Funcion de corte
     if es_valido(grupo):
@@ -116,10 +116,13 @@ def backtrack(grupo):
         print(*grupo, sep = " - ")
         for nueva_persona in range(last_person_index+1, len(grupo)):
             grupo[nueva_persona] = 1
-            # Si pasa la funcion limite, sigo. Es decir, solo la agrego si mejora en algo
-            if ganancia_grupo(grupo) >= ganancia_grupo_actual:
+            # Si pasa la funcion costo, sigo. Si no mejora, se poda
+            if ganancia_grupo(grupo) > ganancia_grupo_actual:
                 print("Mejora al agregar: "+ str(ganancia_grupo_actual) + " -> " + str(ganancia_grupo(grupo)))
                 backtrack(grupo)
+            else:
+                print("PODA DE:", end='')
+                print(*grupo, sep = " | ")
             grupo[nueva_persona] = 0
 
 backtrack(grupo)
