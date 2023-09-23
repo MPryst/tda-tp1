@@ -3,73 +3,79 @@ import sys
 import math
 
 def es_menor(a, b, ref):
-    ia, ib = 0, 0
-    while ref[ia] is not a:
-        ia += 1
-    while ref[ib] is not b:
-        ib += 1
-    return ia < ib
+    return ref[a] < ref[b]
 
-def ordenar_contar(L, n, ref):
+def ordenar_contar(L, ref):
+    n = len(L)
     if n <= 1:
         return 0, L
     else:
-        mid_b = math.floor(n / 2)
-        mid_t = math.ceil(n / 2)
+        m = n // 2
 
-        B = L[:mid_b]
-        T = L[mid_t:]
+        B = L[:m]
+        T = L[m:]
+        # print(m, B)
+        # print(n-m, T)
 
-        inv_b, B = ordenar_contar(B, mid_b, ref)
-        inv_t, T = ordenar_contar(T, n - mid_t, ref)
+        inv_b, B = ordenar_contar(B, ref)
+        inv_t, T = ordenar_contar(T, ref)
 
-        inv, L = merge_contar(B, mid_b, T, n - mid_t, ref)
+        inv, L = merge_contar(B, T, ref)
+        # print('inv:', inv, L)
+        # print(inv + inv_t+ inv_b)
 
     return inv_b + inv_t + inv, L
 
-def merge_contar(A, n_a, B, n_b, ref):
-    L = [0 for _ in range(n_a + n_b)]
+def merge_contar(A, B, ref):
+    na, nb = len(A), len(B)
+    L = []
     inv, i, j = 0, 0, 0
     
-    while i < n_a and j < n_b:
+    while i < na and j < nb:
         a, b = A[i], B[j]
         if es_menor(a, b, ref):
-            L[i + j] = a
+            L.append(a)
             i += 1
         else:
-            L[i + j] = b
-            inv += (n_a - i)
+            L.append(b)
+            inv += (na - i)
             j += 1
 
-    while j < n_b:
-        L[i + j] = B[j]
+    while j < nb:
+        L.append(B[j])
         j += 1
-    while i < n_a:
-        L[i + j] = A[i]
+    while i < na:
+        L.append(A[i])
         i += 1
     
     return inv, L
 
 
-alumnos_txt = open(sys.argv[1])
-capitan_i = int(sys.argv[2])
-alumnos_csv = csv.reader(alumnos_txt, delimiter=",")
+def main():
+    alumnos_csv = csv.reader(open(sys.argv[1]), delimiter=",")
+    capitan_i = int(sys.argv[2]) - 1
 
-alumnos = [row for row in alumnos_csv]
-nombres = [row[0] for row in alumnos]
-conocimientos = [row[1:] for row in alumnos]
-n = len(alumnos)
-comp = 0
+    alumnos = [row for row in alumnos_csv]
+    nombres = [row[0] for row in alumnos]
+    categorias = [row[1:] for row in alumnos]
+    n = len(alumnos)
 
-nombre = None
-comp = 0
+    ref = {}
+    for i, c in enumerate(categorias[capitan_i]):
+        ref[c] = i
 
-for i in range(0, n):
-    if i != capitan_i:
-        aux = ordenar_contar(conocimientos[i], 8, conocimientos[capitan_i])
-        if aux[0] > comp:
-            comp = aux[0]
-            complementario = aux
-            nombre = nombres[i]
+    nombre = None
+    comp = 0
 
-print(nombre, nombres[capitan_i])
+    for i in range(0, n):
+        if i != capitan_i:
+            aux = ordenar_contar(categorias[i], ref)
+            if aux[0] > comp:
+                comp = aux[0]
+                nombre = nombres[i]
+
+    print('El participante más complementario de', nombres[capitan_i], 'es', nombre)
+
+
+if __name__ == "__main__":
+    main()
