@@ -1,0 +1,1 @@
+python3 ejercicio_1.py "habilidades.txt" "candidatos.txt"
