@@ -87,7 +87,6 @@ def main():
                 comp = aux[0]
                 comp_i = i
 
-    print('Capitan, Complementario:')
     print(nombres[capitan_i],', ', nombres[comp_i], sep='')
 
 
