@@ -134,11 +134,42 @@ def backtrack(grupo):
 
 backtrack(grupo)
 
+ganancia_resultado = max_ganancia
+grupo_resultado = mejor_grupo.copy()
+cantidad_grupo_resultado = 0
+for i in range(0, len(grupo_resultado)):
+    if grupo_resultado[i] == 1:
+        cantidad_grupo_resultado = cantidad_grupo_resultado + 1
+        
 
+grupo = len(personas) * [0]    
+grupo_auxiliar = len(personas) * [0]
+habilidades_auxiliar = len(habilidades) * [0]
+mejor_grupo = len(personas) * [0]
+max_ganancia = 0
+cantidad_mejor_grupo = len(personas)
 
+# Bugfix: Ejecutarlo nuevamente (contemplando el primer elemento)
+grupo[0]=1
+backtrack(grupo)
+
+cantidad_integrantes_ultimo_resultado = 0
+for i in range(0, len(mejor_grupo)):
+    if mejor_grupo[i] == 1:
+        cantidad_integrantes_ultimo_resultado = cantidad_integrantes_ultimo_resultado + 1
+
+# Si la mejor ejecucion fue la anterior, imprimirla
+if ganancia_resultado == len(habilidades) and cantidad_grupo_resultado <= cantidad_integrantes_ultimo_resultado:
+    for i in range(0, len(grupo_resultado)):
+        if grupo_resultado[i] == 1:
+            print(personas[i][0])
+    exit(0)
+
+# Si la mejor fue la ultima, imprimirla
 if (max_ganancia == len(habilidades)):
     for i in range(0, len(mejor_grupo)):
         if mejor_grupo[i] == 1:
             print(personas[i][0])
-else:
-    print("RESULTADO: No existe un grupo posible para cubrir todas las habilidades con los candidatos disponibles.")   
+    exit(0)
+
+print("RESULTADO: No existe un grupo posible para cubrir todas las habilidades con los candidatos disponibles.")   
