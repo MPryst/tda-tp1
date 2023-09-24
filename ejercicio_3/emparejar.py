@@ -87,9 +87,10 @@ def main():
             aux = ordenar_contar(categorias[i], ref)
             if aux[0] > comp:
                 comp = aux[0]
-                comp_i = nombres[i]
+                comp_i = i
 
-    print(nombres[capitan_i], nombres[comp_i])
+    print('Capitan, Complementario:')
+    print(nombres[capitan_i],', ', nombres[comp_i], sep='')
 
 
 if __name__ == "__main__":
