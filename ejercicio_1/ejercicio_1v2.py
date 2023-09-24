@@ -11,22 +11,23 @@ except:
     exit(code=1)
 
 # Habilidades[0 .. H-1] y Personas[0 .. P-1]
-habilidades = []
+habilidades = {}
 personas = []
-try:
+numero_fila = 0
+try:    
     for fila in habilidades_csv:
-        print(fila[0])
         if fila[0].isnumeric() == False:
             print(fila[0] + " no es un codigo valido para una habilidad.") 
             raise Exception("Codigo de habilidad invalido")
-        habilidades.append(fila[1])
+        habilidades[fila[0]] = numero_fila        
+        numero_fila = numero_fila + 1
 except:
     print("Error al cargar los datos del archivo de habilidades")
     exit(code=2)
 
 try:
     for fila in candidatos_csv:
-        personas.append([fila[0], list(int(x)-1 for x in (fila[1:]))])    
+        personas.append([fila[0], list(habilidades[x] for x in (fila[1:]))])    
 except:
     print("Error al cargar los datos del archivo de candidatos")
     exit(code=2)
@@ -63,10 +64,10 @@ def ganancia_grupo(grupo, print_result = False):
         print()
         print("\tGrupo: ", end='\t|')
         print(*grupo, sep = " | ", end='\t|')
-        print("\tcantidad("+str(cantidad_integrantes)+"/"+ str(len(grupo))+")")
+        print("\tpersonas("+str(cantidad_integrantes)+"/"+ str(len(grupo))+")")
         print("\tHab. ", end='\t|')
         print(*habilidades_auxiliar, sep = " | ", end='|')
-        print("\tcantidad("+str(cantidad_habilidades)+"/"+ str(len(habilidades))+")")
+        print("\thabilidades("+str(cantidad_habilidades)+"/"+ str(len(habilidades))+")")
     return cantidad_habilidades   
 
 def es_valido(grupo):    
@@ -126,9 +127,8 @@ def backtrack(grupo):
                 last_person_index = person_index
                 break
             else:
-                last_person_index = person_index        
+                last_person_index = person_index                
         
-        print("GRUPO ANTES DE")
         print(*grupo, sep = " - ")
         
         personas_a_explorar = []
