@@ -64,17 +64,17 @@ def main():
     for i, c in enumerate(categorias[capitan_i]):
         ref[c] = i
 
-    nombre = None
     comp = 0
+    comp_i = 0
 
     for i in range(0, n):
         if i != capitan_i:
             aux = ordenar_contar(categorias[i], ref)
             if aux[0] > comp:
                 comp = aux[0]
-                nombre = nombres[i]
+                comp_i = nombres[i]
 
-    print('El participante más complementario de', nombres[capitan_i], 'es', nombre)
+    print(nombres[capitan_i], nombres[comp_i])
 
 
 if __name__ == "__main__":
