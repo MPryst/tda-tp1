@@ -112,9 +112,7 @@ def backtrack(grupo):
             cantidad_mejor_grupo = cantidad_mejor_grupo + 1
     
     # Si mejora, lo actualizo
-    if ganancia_grupo_actual > max_ganancia or (ganancia_grupo_actual == max_ganancia and cantidad_mejor_grupo > cantidad_grupo_actual):
-        print("MEJORA RESPECTO DE: ")
-        ganancia_grupo(mejor_grupo, True)        
+    if ganancia_grupo_actual > max_ganancia or (ganancia_grupo_actual == max_ganancia and cantidad_mejor_grupo > cantidad_grupo_actual):        
         max_ganancia = ganancia_grupo_actual
         mejor_grupo = grupo.copy()
     
@@ -139,7 +137,7 @@ def backtrack(grupo):
 
             # Si pasa la funcion costo, sigo. Si no mejora, se poda/no se recorre
             if ganancia_con_persona > ganancia_grupo_actual:
-                print("Hay una mejora: "+ str(nueva_persona_index) + " -> " + str(ganancia_con_persona))
+                print("Hay una mejora: "+ str(ganancia_grupo_actual) + " -> " + str(ganancia_con_persona))
                 personas_a_explorar.append([nueva_persona_index, ganancia_con_persona])
         
         # Ordeno por ganancia para tener un recorrido de descendientes desde el mas prometedor
