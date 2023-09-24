@@ -60,6 +60,10 @@ def main():
     categorias = [row[1:] for row in alumnos]
     n = len(alumnos)
 
+    if capitan_i >= len(alumnos) or capitan_i <0:
+        print('Error: El numero ingresado no corresponde a una fila de alumno')
+        exit(code=1)
+
     ref = {}
     for i, c in enumerate(categorias[capitan_i]):
         ref[c] = i
