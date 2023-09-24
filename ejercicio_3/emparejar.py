@@ -63,6 +63,10 @@ def main():
     if capitan_i >= len(alumnos) or capitan_i <0:
         print('Error: El numero ingresado no corresponde a una fila de alumno')
         exit(code=1)
+        
+    if len(alumnos) <= 1:
+        print('Error: Deben haber al menos dos participantes')
+        exit(code=1)
 
     ref = {}
     for i, c in enumerate(categorias[capitan_i]):
