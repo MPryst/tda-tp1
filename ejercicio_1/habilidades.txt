@@ -1,11 +1,8 @@
-1,Cocinar
+1123,Cocinar
 2,primeros Auxilios
 3,Meteorología
 4,biología
-5,pilotear helicoptero
-6,comunicaciones
-7,mecanica
+50,pilotear helicoptero
+69,comunicaciones
+700,mecanica
 8,programar
-9,correr rapido
-10,saltar alto
-11,arreglar cosas

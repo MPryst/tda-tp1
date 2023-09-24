@@ -60,6 +60,14 @@ def ganancia_grupo(grupo, print_result = False):
     for i in range(0, len(habilidades_auxiliar)):
         if (habilidades_auxiliar[i] == 1):
             cantidad_habilidades = cantidad_habilidades + 1
+    if print_result:
+        print()
+        print("\tGrupo: ", end='\t|')
+        print(*grupo, sep = " | ", end='\t|')
+        print("\tpersonas("+str(cantidad_integrantes)+"/"+ str(len(grupo))+")")
+        print("\tHab. ", end='\t|')
+        print(*habilidades_auxiliar, sep = " | ", end='|')
+        print("\thabilidades("+str(cantidad_habilidades)+"/"+ str(len(habilidades))+")")
     return cantidad_habilidades   
 
 def es_valido(grupo):    
@@ -71,18 +79,23 @@ def es_valido(grupo):
             break
         else:
             ultima_persona_index = persona_index
-        
+    
+    print("Ultimo: " + str(ultima_persona_index), end=' +: ')
     global grupo_auxiliar
     grupo_auxiliar = grupo.copy()
     for i in range(ultima_persona_index, len(grupo)):
+        print(str(i), end=', ')
         grupo_auxiliar[i] = 1
     
     max_ganancia_pivote = ganancia_grupo(grupo_auxiliar)
+    print()
     
     return max_ganancia_pivote == len(habilidades)
 
 
 def backtrack(grupo):
+    print("***Grupo*** -\t|", end='')
+    print(*grupo, sep = " | ")
     ganancia_grupo_actual = ganancia_grupo(grupo, True)
     global max_ganancia
     global mejor_grupo
@@ -100,7 +113,6 @@ def backtrack(grupo):
     
     # Si mejora, lo actualizo
     if ganancia_grupo_actual > max_ganancia or (ganancia_grupo_actual == max_ganancia and cantidad_mejor_grupo > cantidad_grupo_actual):        
-        ganancia_grupo(mejor_grupo, True)        
         max_ganancia = ganancia_grupo_actual
         mejor_grupo = grupo.copy()
     
@@ -114,7 +126,9 @@ def backtrack(grupo):
                 break
             else:
                 last_person_index = person_index                
-                       
+        
+        print(*grupo, sep = " - ")
+        
         personas_a_explorar = []
         for nueva_persona_index in range(last_person_index+1, len(grupo)):
             grupo[nueva_persona_index] = 1
@@ -123,10 +137,13 @@ def backtrack(grupo):
 
             # Si pasa la funcion costo, sigo. Si no mejora, se poda/no se recorre
             if ganancia_con_persona > ganancia_grupo_actual:
+                print("Hay una mejora: "+ str(ganancia_grupo_actual) + " -> " + str(ganancia_con_persona))
                 personas_a_explorar.append([nueva_persona_index, ganancia_con_persona])
         
         # Ordeno por ganancia para tener un recorrido de descendientes desde el mas prometedor
         personas_a_explorar.sort(key=lambda a: a[1], reverse=True)
+        print("A recorrer los mejores ", end="")
+        print(*personas_a_explorar, sep = " - ")
         for persona_con_ganancia in personas_a_explorar:
             grupo[persona_con_ganancia[0]] = 1
             backtrack(grupo)
