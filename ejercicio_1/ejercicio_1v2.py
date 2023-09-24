@@ -1,18 +1,35 @@
 import csv
 import sys
+import string
 
 # Argumentos: Archivos habilidades y candidatos
-habilidades_csv = csv.reader(open(sys.argv[1]), delimiter=",")
-candidatos_csv = csv.reader(open(sys.argv[2]), delimiter=",")
+try:
+    habilidades_csv = csv.reader(open(sys.argv[1]), delimiter=",")
+    candidatos_csv = csv.reader(open(sys.argv[2]), delimiter=",")
+except:
+    print("Error al leer archivos de entrada")
+    exit(code=1)
 
 # Habilidades[0 .. H-1] y Personas[0 .. P-1]
 habilidades = []
 personas = []
-for fila in habilidades_csv:
-    habilidades.append(fila[1])
-for fila in candidatos_csv:
-    personas.append([fila[0], list(int(x)-1 for x in (fila[1:]))])    
+try:
+    for fila in habilidades_csv:
+        print(fila[0])
+        if fila[0].isnumeric() == False:
+            print(fila[0] + " no es un codigo valido para una habilidad.") 
+            raise Exception("Codigo de habilidad invalido")
+        habilidades.append(fila[1])
+except:
+    print("Error al cargar los datos del archivo de habilidades")
+    exit(code=2)
 
+try:
+    for fila in candidatos_csv:
+        personas.append([fila[0], list(int(x)-1 for x in (fila[1:]))])    
+except:
+    print("Error al cargar los datos del archivo de candidatos")
+    exit(code=2)
 # Grupo[0 .. P-1]
 grupo = len(personas) * [0]
 
@@ -24,7 +41,6 @@ habilidades_auxiliar = len(habilidades) * [0]
 mejor_grupo = len(personas) * [0]
 max_ganancia = 0
 cantidad_mejor_grupo = len(personas)
-
 
 def ganancia_grupo(grupo, print_result = False):
     global habilidades_auxiliar
@@ -64,13 +80,13 @@ def es_valido(grupo):
             ultima_persona_index = persona_index
     
     print("Ultimo: " + str(ultima_persona_index), end=' +: ')
-    global grupo_pivote
-    grupo_pivote = grupo.copy()
+    global grupo_auxiliar
+    grupo_auxiliar = grupo.copy()
     for i in range(ultima_persona_index, len(grupo)):
         print(str(i), end=', ')
-        grupo_pivote[i] = 1
+        grupo_auxiliar[i] = 1
     
-    max_ganancia_pivote = ganancia_grupo(grupo_pivote)
+    max_ganancia_pivote = ganancia_grupo(grupo_auxiliar)
     print()
     
     return max_ganancia_pivote == len(habilidades)
@@ -114,24 +130,35 @@ def backtrack(grupo):
         
         print("GRUPO ANTES DE")
         print(*grupo, sep = " - ")
-        for nueva_persona in range(last_person_index+1, len(grupo)):
-            grupo[nueva_persona] = 1
-            # Si pasa la funcion costo, sigo. Si no mejora, se poda
-            if ganancia_grupo(grupo) > ganancia_grupo_actual:
-                print("Mejora al agregar: "+ str(ganancia_grupo_actual) + " -> " + str(ganancia_grupo(grupo)))
-                backtrack(grupo)
-            else:
-                print("PODA DE:", end='')
-                print(*grupo, sep = " | ")
-            grupo[nueva_persona] = 0
+        
+        personas_a_explorar = []
+        for nueva_persona_index in range(last_person_index+1, len(grupo)):
+            grupo[nueva_persona_index] = 1
+            ganancia_con_persona = ganancia_grupo(grupo)
+            grupo[nueva_persona_index] = 0
+
+            # Si pasa la funcion costo, sigo. Si no mejora, se poda/no se recorre
+            if ganancia_con_persona > ganancia_grupo_actual:
+                print("Hay una mejora: "+ str(nueva_persona_index) + " -> " + str(ganancia_con_persona))
+                personas_a_explorar.append([nueva_persona_index, ganancia_con_persona])
+        
+        # Ordeno por ganancia para tener un recorrido de descendientes desde el mas prometedor
+        personas_a_explorar.sort(key=lambda a: a[1], reverse=True)
+        print("A recorrer los mejores ", end="")
+        print(*personas_a_explorar, sep = " - ")
+        for persona_con_ganancia in personas_a_explorar:
+            grupo[persona_con_ganancia[0]] = 1
+            backtrack(grupo)
+            grupo[persona_con_ganancia[0]] = 0
 
 backtrack(grupo)
+
 print()
 print("MEJOR GRUPO:")    
 print(*mejor_grupo, sep = " | ")
 for i in range(0, len(mejor_grupo)):
     if mejor_grupo[i] == 1:
-        print(personas[i][0],end=', ')
+        print(personas[i][0])
 print()
 print('**************************************************************************************************************************')
 if (max_ganancia == len(habilidades)):
