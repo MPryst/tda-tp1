@@ -1,9 +1,10 @@
 import csv
 import sys
-import math
+
 
 def es_menor(a, b, ref):
     return ref[a] < ref[b]
+
 
 def ordenar_contar(L, ref):
     n = len(L)
@@ -14,17 +15,14 @@ def ordenar_contar(L, ref):
 
         B = L[:m]
         T = L[m:]
-        # print(m, B)
-        # print(n-m, T)
 
         inv_b, B = ordenar_contar(B, ref)
         inv_t, T = ordenar_contar(T, ref)
 
         inv, L = merge_contar(B, T, ref)
-        # print('inv:', inv, L)
-        # print(inv + inv_t+ inv_b)
 
     return inv_b + inv_t + inv, L
+
 
 def merge_contar(A, B, ref):
     na, nb = len(A), len(B)
